@@ -3,6 +3,7 @@ package pl.yasinvolved.discordoauth;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class Config {
         WHITELISTED_UUIDS = BUILDER
                 .comment("Insert here UUIDs of players that don't need to have enforced login")
                 .define("whitelisted_uuids",
-                        Collections.emptyList(),
+                        ArrayList::new,
                         item -> item instanceof String
                 );
 
