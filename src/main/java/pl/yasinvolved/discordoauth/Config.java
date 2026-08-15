@@ -60,10 +60,7 @@ public class Config {
         BUILDER.push("Whitelist");
         WHITELISTED_UUIDS = BUILDER
                 .comment("Insert here UUIDs of players that don't need to have enforced login")
-                .define("whitelisted_uuids",
-                        ArrayList::new,
-                        item -> item instanceof String
-                );
+                .defineList("whitelisted_uuids", ArrayList::new, obj -> obj instanceof String);
 
         SPEC = BUILDER.build();
     }

@@ -67,6 +67,9 @@ public class Discordoauth {
         SecretLoader.load();
         callbackServer = new CallbackServer(mcServer);
         callbackServer.init();
+
+        LOGGER.info("Whitelisted players:");
+        Config.WHITELISTED_UUIDS.get().forEach(LOGGER::info);
     }
 
     @SubscribeEvent
