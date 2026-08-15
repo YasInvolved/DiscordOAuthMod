@@ -79,6 +79,10 @@ public class Discordoauth {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         UUID playerUuid = player.getUUID();
+        if (Config.WHITELISTED_UUIDS.get().contains(playerUuid.toString())) {
+            return;
+        }
+
         PlayerManager.putInVoid(player);
 
         ApiClient.checkVerificationStatus(playerUuid).thenAccept(isVerified -> {

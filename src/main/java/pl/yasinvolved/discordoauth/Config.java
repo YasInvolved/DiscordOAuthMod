@@ -1,18 +1,10 @@
 package pl.yasinvolved.discordoauth;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
 // Demonstrates how to use Neo's config APIs
@@ -30,6 +22,9 @@ public class Config {
     public static final ModConfigSpec.EnumValue<SecretSource> SECRET_SOURCE;
     public static final ModConfigSpec.ConfigValue<String> SECRET_ENV_VAR_NAME;
     public static final ModConfigSpec.ConfigValue<String> SECRET_RAW_VALUE;
+
+    // whitelist
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELISTED_UUIDS;
 
     static {
         BUILDER.push("Integration Settings");
@@ -60,6 +55,14 @@ public class Config {
                 .define("secretValue", "");
 
         BUILDER.pop();
+
+        BUILDER.push("Whitelist");
+        WHITELISTED_UUIDS = BUILDER
+                .comment("Insert here UUIDs of players that don't need to have enforced login")
+                .define("whitelisted_uuids",
+                        Collections.emptyList(),
+                        item -> item instanceof String
+                );
 
         SPEC = BUILDER.build();
     }
