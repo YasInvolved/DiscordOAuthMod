@@ -83,6 +83,15 @@ public class PlayerManager {
         UUID uuid = player.getUUID();
         SavedLocation loc = AUTHVOID_PLAYERS.get(uuid);
 
+        if (loc == null) {
+            BlockPos defaultSpawn = player.getRespawnPosition();
+            loc = new SavedLocation(
+                    player.getRespawnDimension(),
+                    defaultSpawn.getX(), defaultSpawn.getY(), defaultSpawn.getZ(),
+                    0, 0
+            );
+        }
+
         player.removeEffect(MobEffects.LEVITATION);
         player.removeEffect(MobEffects.INVISIBILITY);
 

@@ -29,7 +29,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-          arguments: --no-configuration-cache --no-daemon
 
       - name: Grant Execute Permission for Gradle Wrapper
         run: chmod +x gradlew

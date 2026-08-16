@@ -2,15 +2,11 @@ package pl.yasinvolved.discordoauth;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -23,7 +19,6 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.authvoid.PlayerManager;
 import pl.yasinvolved.discordoauth.crypto.SecretLoader;
-import pl.yasinvolved.discordoauth.crypto.StateManager;
 import pl.yasinvolved.discordoauth.exchange.ApiClient;
 import pl.yasinvolved.discordoauth.exchange.CallbackServer;
 
@@ -83,6 +78,8 @@ public class Discordoauth {
 
         UUID playerUuid = player.getUUID();
         if (Config.WHITELISTED_UUIDS.get().contains(playerUuid.toString())) {
+            LOGGER.info("Player {} ({}) is whitelisted. Skipping authentication.", playerUuid, player.getDisplayName().getString());
+            PlayerManager.releaseFromVoid(player);
             return;
         }
 
