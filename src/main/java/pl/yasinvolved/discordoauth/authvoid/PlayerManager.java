@@ -84,12 +84,7 @@ public class PlayerManager {
         SavedLocation loc = AUTHVOID_PLAYERS.get(uuid);
 
         if (loc == null) {
-            BlockPos defaultSpawn = player.getRespawnPosition();
-            loc = new SavedLocation(
-                    player.getRespawnDimension(),
-                    defaultSpawn.getX(), defaultSpawn.getY(), defaultSpawn.getZ(),
-                    0, 0
-            );
+            loc = getDefaultLocation(player);
         }
 
         player.removeEffect(MobEffects.LEVITATION);
@@ -105,10 +100,5 @@ public class PlayerManager {
         if (target == null) target = player.getServer().overworld();
 
         player.teleportTo(target, loc.x(), loc.y(), loc.z(), loc.yRot(), loc.xRot());
-
-        player.sendSystemMessage(
-                Component.literal("Account verified! Welcome to the server.")
-                        .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
-        );
     }
 }

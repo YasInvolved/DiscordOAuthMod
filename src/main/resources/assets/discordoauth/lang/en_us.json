@@ -1,5 +1,4 @@
 {
-  "itemGroup.discordoauth": "Example Mod Tab",
-  "block.discordoauth.example_block": "Example Block",
-  "item.discordoauth.example_item": "Example Item"
+  "message.discordoauth.auth_link": "Click here to link your Discord account and join!",
+  "message.discordoauth.auth_success": "Logged in successfully! Welcome to the server."
 }

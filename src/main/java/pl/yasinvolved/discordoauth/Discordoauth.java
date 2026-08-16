@@ -46,7 +46,7 @@ public class Discordoauth {
         String authUrl = ApiClient.getVerificationLink(player.getUUID());
         Component message = Component.literal("\n[Discord OAuth] ")
                 .withStyle(ChatFormatting.GOLD, ChatFormatting.GOLD)
-                .append(Component.literal("Click here to link your Discord account and join!")
+                .append(Component.translatable("message.discordoauth.auth_link")
                         .withStyle(Style.EMPTY
                             .withColor(ChatFormatting.AQUA)
                             .withUnderlined(true)
@@ -89,6 +89,14 @@ public class Discordoauth {
             player.getServer().execute(() -> {
                 if (isVerified) {
                     PlayerManager.releaseFromVoid(player);
+                    player.sendSystemMessage(
+                            Component.literal("[Discord OAuth] ")
+                                    .withStyle(ChatFormatting.GOLD, ChatFormatting.GOLD).append(
+                                    Component.translatable("message.discordoauth.auth_success")
+                                            .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
+                            )
+
+                    );
                 } else {
                     sendAuthLink(player);
                 }
