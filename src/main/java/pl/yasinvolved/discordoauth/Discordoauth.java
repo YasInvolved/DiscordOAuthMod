@@ -1,10 +1,7 @@
 package pl.yasinvolved.discordoauth;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
@@ -18,6 +15,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.authvoid.PlayerManager;
+import pl.yasinvolved.discordoauth.chat.MessageBuilder;
 import pl.yasinvolved.discordoauth.crypto.SecretLoader;
 import pl.yasinvolved.discordoauth.exchange.ApiClient;
 import pl.yasinvolved.discordoauth.exchange.CallbackServer;
@@ -44,16 +42,8 @@ public class Discordoauth {
 
     private static void sendAuthLink(ServerPlayer player) {
         String authUrl = ApiClient.getVerificationLink(player.getUUID());
-        Component message = Component.literal("\n[Discord OAuth] ")
-                .withStyle(ChatFormatting.GOLD, ChatFormatting.GOLD)
-                .append(Component.translatable("message.discordoauth.auth_link")
-                        .withStyle(Style.EMPTY
-                            .withColor(ChatFormatting.AQUA)
-                            .withUnderlined(true)
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, authUrl)
-                        ))
-                );
-        player.sendSystemMessage(message);
+        Component hyperlink = MessageBuilder.makeUrl(MessageBuilder.AUTH_LINK_MESSAGE, authUrl);
+        player.sendSystemMessage(MessageBuilder.format(MessageBuilder.Type.INFO, hyperlink));
     }
 
     @SubscribeEvent
@@ -62,9 +52,6 @@ public class Discordoauth {
         SecretLoader.load();
         callbackServer = new CallbackServer(mcServer);
         callbackServer.init();
-
-        LOGGER.info("Whitelisted players:");
-        Config.WHITELISTED_UUIDS.get().forEach(LOGGER::info);
     }
 
     @SubscribeEvent
@@ -89,14 +76,7 @@ public class Discordoauth {
             player.getServer().execute(() -> {
                 if (isVerified) {
                     PlayerManager.releaseFromVoid(player);
-                    player.sendSystemMessage(
-                            Component.literal("[Discord OAuth] ")
-                                    .withStyle(ChatFormatting.GOLD, ChatFormatting.GOLD).append(
-                                    Component.translatable("message.discordoauth.auth_success")
-                                            .withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD)
-                            )
-
-                    );
+                    player.sendSystemMessage(MessageBuilder.AUTH_SUCCESS_MESSAGE);
                 } else {
                     sendAuthLink(player);
                 }
