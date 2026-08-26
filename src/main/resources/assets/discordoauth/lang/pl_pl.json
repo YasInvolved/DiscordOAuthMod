@@ -1,4 +1,6 @@
 {
   "message.discordoauth.auth_link": "Naciśnij tutaj aby zalogować się przez Discord",
-  "message.discordoauth.auth_success": "Logowanie się udało! Miłej gry."
+  "message.discordoauth.auth_success": "Logowanie się udało! Miłej gry.",
+  "message.discordoauth.force_release_sender": "Gracz tymczasowy wypuszczony!",
+  "message.discordoauth.force_release_receiver": "Zostałeś/aś tymczasowo wypuszczony przez administratora. Następnym razem musisz się zalogować normalnie."
 }

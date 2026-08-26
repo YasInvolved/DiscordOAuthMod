@@ -6,13 +6,18 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import pl.yasinvolved.discordoauth.Discordoauth;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +34,20 @@ public class PlayerManager {
     );
 
     private static final ConcurrentHashMap<UUID, SavedLocation> AUTHVOID_PLAYERS = new ConcurrentHashMap<>();
+
+    public static String[] getUnverifiedPlayerNames() {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ArrayList<String> players = new ArrayList<>();
+
+        for (UUID uuid : AUTHVOID_PLAYERS.keySet())
+        {
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+            if (player == null) continue;
+            players.add(player.getName().getString());
+        }
+
+        return players.toArray(new String[0]);
+    }
 
     public static boolean isUnverified(ServerPlayer player) {
         return AUTHVOID_PLAYERS.containsKey(player.getUUID());

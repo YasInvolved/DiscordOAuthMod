@@ -4,18 +4,21 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.authvoid.PlayerManager;
 import pl.yasinvolved.discordoauth.chat.MessageBuilder;
+import pl.yasinvolved.discordoauth.commands.AuthCommands;
 import pl.yasinvolved.discordoauth.crypto.SecretLoader;
 import pl.yasinvolved.discordoauth.exchange.ApiClient;
 import pl.yasinvolved.discordoauth.exchange.CallbackServer;
@@ -23,7 +26,7 @@ import pl.yasinvolved.discordoauth.exchange.CallbackServer;
 import java.util.UUID;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Discordoauth.MODID)
+@Mod(value = Discordoauth.MODID, dist = Dist.DEDICATED_SERVER)
 @EventBusSubscriber(modid = Discordoauth.MODID)
 public class Discordoauth {
     // Define mod id in a common place for everything to reference
@@ -82,5 +85,10 @@ public class Discordoauth {
                 }
             });
         });
+    }
+
+    @SubscribeEvent
+    private static void onRegisterCommand(RegisterCommandsEvent event) {
+        AuthCommands.register(event.getDispatcher());
     }
 }

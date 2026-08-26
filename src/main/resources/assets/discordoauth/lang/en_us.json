@@ -1,4 +1,6 @@
 {
   "message.discordoauth.auth_link": "Click here to link your Discord account and join!",
-  "message.discordoauth.auth_success": "Logged in successfully! Welcome to the server."
+  "message.discordoauth.auth_success": "Logged in successfully! Welcome to the server.",
+  "message.discordoauth.force_release_sender": "Player temporarily accepted!",
+  "message.discordoauth.force_release_receiver": "You've been forcefully logged in. You'll have to log in again next time."
 }
