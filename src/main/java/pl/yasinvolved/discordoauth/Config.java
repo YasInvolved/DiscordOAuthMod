@@ -32,7 +32,7 @@ public class Config {
 
         API_BASE_URL = BUILDER
                 .comment(" Base URL of your OAuth microservice")
-                .define("apiBaseUrl", "http://localhost:3000");
+                .define("apiBaseUrl", "http://localhost:3000", Config::isValidUrl);
 
         BUILDER.pop();
 
@@ -73,5 +73,31 @@ public class Config {
         }
 
         return URI.create(urlStr);
+    }
+
+    public static boolean isValidUrl(Object o) {
+        if (!(o instanceof String urlString))
+            return false;
+
+        if (urlString.isBlank())
+            return false;
+
+        try
+        {
+            URI uri = new URI(urlString);
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                return false;
+            }
+
+            String scheme = uri.getScheme().toLowerCase();
+            if (!scheme.equals("http") && !scheme.equals("https")) {
+                return false;
+            }
+
+            uri.toURL();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
