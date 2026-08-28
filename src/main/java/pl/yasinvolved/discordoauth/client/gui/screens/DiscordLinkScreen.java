@@ -2,6 +2,7 @@ package pl.yasinvolved.discordoauth.client.gui.screens;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.slf4j.Logger;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class DiscordLinkScreen extends Screen {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final Minecraft minecraft = Minecraft.getInstance();
     private final String challengeToken;
     private final String apiUrl;
@@ -30,6 +33,7 @@ public class DiscordLinkScreen extends Screen {
     private String authUrl = null;
 
     private Button openBrowserButton;
+    private Button cancelButton;
 
     private Component statusMessage = Component.literal("Requesting authorization link...");
     private int statusColor = 0xFFFF55;
@@ -38,8 +42,21 @@ public class DiscordLinkScreen extends Screen {
     public DiscordLinkScreen(String apiUrl, String challengeToken, IPayloadContext context) {
         super(Component.literal("Discord Account Verification"));
         this.apiUrl = apiUrl;
+        System.out.println(apiUrl);
         this.challengeToken = challengeToken;
         this.networkContext = context;
+    }
+
+    public void onAuthSuccess() {
+        updateStatus("Authentication successful! Loading world...", 0x55FF55);
+
+        if (this.openBrowserButton != null) {
+            this.openBrowserButton.active = false;
+        }
+
+        if (this.cancelButton != null) {
+            this.cancelButton.active = false;
+        }
     }
 
     @Override
@@ -63,7 +80,7 @@ public class DiscordLinkScreen extends Screen {
         this.openBrowserButton.active = false;
         this.addRenderableWidget(this.openBrowserButton);
 
-        Button cancelButton = Button.builder(
+        this.cancelButton = Button.builder(
                     Component.literal("Disconnect"),
                     this::cancel
                 )
@@ -123,6 +140,7 @@ public class DiscordLinkScreen extends Screen {
                 this.minecraft.execute(() -> {
                     this.isError = true;
                     updateStatus("Failed to connect to auth server: " + e.getMessage(), 0xFF5555);
+                    LOGGER.error("Failed to connect to auth server.", e);
                 });
             }
         });

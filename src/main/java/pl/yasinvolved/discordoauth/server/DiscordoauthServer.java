@@ -10,9 +10,14 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.common.Discordoauth;
+import pl.yasinvolved.discordoauth.server.client_config.tasks.DiscordAuthTask;
+import pl.yasinvolved.discordoauth.server.crypto.TokenGenerator;
+import pl.yasinvolved.discordoauth.server.webhook.WebhookManager;
 
 import java.lang.reflect.Field;
 
@@ -29,6 +34,16 @@ public class DiscordoauthServer {
     public DiscordoauthServer(IEventBus modEventBus, ModContainer modContainer) {
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.SERVER, Config.SPEC);
+    }
+
+    @SubscribeEvent()
+    public static void onServerStarting(final ServerStartingEvent event) {
+        WebhookManager.startServer(Config.WEBHOOK_PORT.get());
+    }
+
+    @SubscribeEvent()
+    public static void onServerStopping(final ServerStoppingEvent event) {
+        WebhookManager.stopServer();
     }
 
     public static GameProfile getProfileFromListener(ServerConfigurationPacketListener listener) {

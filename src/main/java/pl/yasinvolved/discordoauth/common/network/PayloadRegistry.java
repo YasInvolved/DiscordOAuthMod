@@ -11,7 +11,7 @@ import pl.yasinvolved.discordoauth.common.Discordoauth;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthAckPayloadC2S;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthRequestPayloadS2C;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthSuccessPayloadS2C;
-import pl.yasinvolved.discordoauth.server.ServerPayloadHandler;
+import pl.yasinvolved.discordoauth.server.network.ServerPayloadHandler;
 
 @EventBusSubscriber(modid = Discordoauth.MODID)
 public class PayloadRegistry {

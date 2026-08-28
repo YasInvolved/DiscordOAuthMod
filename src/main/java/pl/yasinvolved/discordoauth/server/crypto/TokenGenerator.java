@@ -1,4 +1,4 @@
-package pl.yasinvolved.discordoauth.server;
+package pl.yasinvolved.discordoauth.server.crypto;
 
 import java.security.SecureRandom;
 import java.util.Base64;
