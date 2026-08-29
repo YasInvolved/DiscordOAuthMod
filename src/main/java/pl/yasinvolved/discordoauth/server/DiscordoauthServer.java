@@ -46,9 +46,12 @@ public class DiscordoauthServer {
 
     @SubscribeEvent()
     public static void onConfigLoaded(final ModConfigEvent.Loading event) {
-        if (Config.SERVER_CHECK.get() && Config.SERVER_CHECK_ID.get().isEmpty()) {
-            throw new IllegalStateException("Discord server check is enabled, but there's no server id specified in config.");
-        }
+        checkConfig();
+    }
+
+    @SubscribeEvent
+    public static void onConfigReloaded(final ModConfigEvent.Reloading event) {
+        checkConfig();
     }
 
     @SubscribeEvent()
@@ -86,5 +89,17 @@ public class DiscordoauthServer {
         }
 
         LOGGER.error("Failed to register configuration task.");
+    }
+
+    private static void checkConfig() {
+        if (Config.SERVER_CHECK.get()) {
+            if (Config.SERVER_CHECK_ID.get().isEmpty()) {
+                throw new IllegalStateException("Server check is enabled but no server id was specified");
+            }
+
+            if (Config.ROLE_CHECK.get() && Config.ROLE_CHECK_ID.get().isEmpty()) {
+                throw new IllegalStateException("Role check is enabled, but no role id was specified");
+            }
+        }
     }
 }

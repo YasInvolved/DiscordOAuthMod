@@ -1,5 +1,6 @@
 package pl.yasinvolved.discordoauth.server.client_config.tasks;
 
+import com.google.gson.JsonElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
@@ -45,7 +46,8 @@ public class DiscordAuthTask implements ICustomConfigurationTask {
 
         CompletableFuture.runAsync(() -> {
             try {
-                boolean initialCheckStatus = initialCheck(Config.SERVER_CHECK.get());
+                ApiClient client = new ApiClient();
+                boolean initialCheckStatus = userCheck(client) && membershipChecks(client);
 
                 ServerLifecycleHooks.getCurrentServer().execute(() -> {
                     if (initialCheckStatus) {
@@ -64,30 +66,51 @@ public class DiscordAuthTask implements ICustomConfigurationTask {
         });
     }
 
-    private boolean serverCheck(ApiClient client) {
-        ApiResponse response = client.getMemberInfo(this.playerUuid, Config.SERVER_CHECK_ID.get());
-        return response.statusCode() == 200;
+    private boolean userCheck(ApiClient client) {
+        ApiResponse res = client.getUser(this.playerUuid);
+        return res.statusCode() == 200;
     }
 
-    private boolean initialCheck(boolean serverCheckEnabled) {
-        ApiClient client = new ApiClient();
-        ApiResponse userResponse = client.getUser(this.playerUuid);
+    private boolean membershipChecks(ApiClient client) {
+        if (Config.SERVER_CHECK.get()) {
+            ApiResponse res = client.getMemberInfo(this.playerUuid, Config.SERVER_CHECK_ID.get());
+            if (res.statusCode() == 200) {
+                JsonElement isMemberElement = res.response().get("is_member");
+                JsonElement isPendingElement = res.response().get("is_pending");
 
-        boolean serverCheckSuccess = true;
-        if (serverCheckEnabled) {
-            serverCheckSuccess = serverCheck(client);
+                if (isMemberElement == null || !isMemberElement.getAsBoolean()) {
+                    return false;
+                }
+
+                if (isPendingElement != null && isPendingElement.getAsBoolean()) {
+                    return false;
+                }
+
+                if (!Config.ROLE_CHECK.get()) {
+                    return true;
+                }
+
+                JsonElement rolesElement = res.response().get("roles");
+                if (rolesElement != null && rolesElement.isJsonArray()) {
+                    String requiredRole = Config.ROLE_CHECK_ID.get();
+
+                    for (JsonElement role : rolesElement.getAsJsonArray()) {
+                        if (role.getAsString().equals(requiredRole)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
-        return userResponse.statusCode() == 200 && serverCheckSuccess;
+
+        return true;
     }
 
     public void onWebhookSuccess() {
         if (this.consumer != null) {
-            boolean serverCheckSuccess = true;
-            if (Config.SERVER_CHECK.get()) {
-                serverCheckSuccess = serverCheck(new ApiClient());
-            }
-
-            if (serverCheckSuccess) {
+            if (membershipChecks(new ApiClient())) {
                 ServerLifecycleHooks.getCurrentServer().execute(() -> this.consumer.accept(new AuthSuccessPayloadS2C()));
             } else {
                 ServerLifecycleHooks.getCurrentServer().execute(() -> this.consumer.accept(new AuthRefusedPayloadS2C("Permission denied.")));

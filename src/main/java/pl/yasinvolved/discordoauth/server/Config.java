@@ -21,6 +21,9 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<Boolean> SERVER_CHECK;
     public static final ModConfigSpec.ConfigValue<String> SERVER_CHECK_ID;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> ROLE_CHECK;
+    public static final ModConfigSpec.ConfigValue<String> ROLE_CHECK_ID;
+
     // whitelist
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELISTED_UUIDS;
 
@@ -43,15 +46,22 @@ public class Config {
                 .defineInRange("webhookPort", 8080, 0, (int)Short.MAX_VALUE * 2);
         BUILDER.pop();
 
-
-        BUILDER.push("Server check");
+        BUILDER.push("Discord Settings");
         SERVER_CHECK = BUILDER
                 .comment("Enable server check")
                 .define("serverCheck", false);
 
         SERVER_CHECK_ID = BUILDER
-                .comment("ID of the Discord server")
+                .comment("ID of the Discord server to check for")
                 .define("serverId", "");
+
+        ROLE_CHECK = BUILDER
+                .comment("Enable role check")
+                .define("roleCheck", false);
+
+        ROLE_CHECK_ID = BUILDER
+                .comment("ID of the Server's role to check for")
+                .define("serverRole", "");
         BUILDER.pop();
 
         BUILDER.push("Whitelist");
