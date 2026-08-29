@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
+import pl.yasinvolved.discordoauth.client.gui.components.StatusString;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthCancelPayloadC2S;
 
 import java.net.URI;
@@ -36,19 +37,19 @@ public class DiscordLinkScreen extends Screen {
     private Button openBrowserButton;
     private Button cancelButton;
 
-    private Component statusMessage = Component.literal("Requesting authorization link...");
-    private int statusColor = 0xFFFF55;
+    private final StatusString statusMessage;
     private boolean isError = false;
 
     public DiscordLinkScreen(String apiUrl, String challengeToken, IPayloadContext context) {
         super(Component.literal("Discord Account Verification"));
+        this.statusMessage = StatusString.ofText("Waiting for server to generate authorization link...", StatusString.Status.NEUTRAL);
         this.apiUrl = apiUrl;
         this.challengeToken = challengeToken;
         this.networkContext = context;
     }
 
     public void onAuthSuccess() {
-        updateStatus("Authentication successful! Loading world...", 0x55FF55);
+        statusMessage.updateText("Authentication successful! Loading world...", StatusString.Status.SUCCESS);
 
         if (this.openBrowserButton != null) {
             this.openBrowserButton.active = false;
@@ -60,7 +61,7 @@ public class DiscordLinkScreen extends Screen {
     }
 
     public void onAuthRefused(String reason) {
-        updateStatus("Server refused authentication. Reason: " + reason, 0xFF5555);
+        statusMessage.updateText("Server refused authentication. Reason: " + reason, StatusString.Status.ERROR);
 
         if (this.openBrowserButton != null) {
             this.openBrowserButton.active = false;
@@ -79,7 +80,7 @@ public class DiscordLinkScreen extends Screen {
                 button -> {
                     if (this.authUrl != null) {
                         Util.getPlatform().openUri(URI.create(this.authUrl));
-                        updateStatus("Waiting for you to authorize in the browser...", 0x55FFFF);
+                        statusMessage.updateText("Waiting for you to authorize in the browser...", StatusString.Status.NEUTRAL);
                     }
                 })
                 .bounds(centerX - 100, centerY + 10, 200, 20)
@@ -103,7 +104,7 @@ public class DiscordLinkScreen extends Screen {
 
     private void fetchAuthUrl() {
         if (this.minecraft.getUser() == null) {
-            updateStatus("Error: Could not determine local player profile.", 0xFF5555);
+            statusMessage.updateText("Error: Could not determine local player profile.", StatusString.Status.ERROR);
             this.isError = true;
             return;
         }
@@ -135,7 +136,7 @@ public class DiscordLinkScreen extends Screen {
 
                     this.minecraft.execute(() -> {
                         this.authUrl = receivedUrl;
-                        updateStatus("Ready! Click below to link your account:", 0x55FF55);
+                        statusMessage.updateText("Ready! Click below to link your account:", StatusString.Status.SUCCESS);
 
                         if (this.openBrowserButton != null) {
                             this.openBrowserButton.active = true;
@@ -147,16 +148,11 @@ public class DiscordLinkScreen extends Screen {
             } catch (Exception e) {
                 this.minecraft.execute(() -> {
                     this.isError = true;
-                    updateStatus("Failed to connect to auth server: " + e.getMessage(), 0xFF5555);
+                    statusMessage.updateText("Failed to connect to auth server: " + e.getMessage(), StatusString.Status.ERROR);
                     LOGGER.error("Failed to connect to auth server.", e);
                 });
             }
         });
-    }
-
-    private void updateStatus(String message, int color) {
-        this.statusMessage = Component.literal(message);
-        this.statusColor = color;
     }
 
     private void cancel(Button _button) {
@@ -165,7 +161,7 @@ public class DiscordLinkScreen extends Screen {
         Screen parentMenu = new JoinMultiplayerScreen(new TitleScreen());
         this.minecraft.setScreen(new DisconnectedScreen(
                 parentMenu,
-                Component.literal("Disconnected"),
+                Component.translatable("disconnect.disconnected"),
                 Component.literal("Discord verification cancelled.")
         ));
     }
@@ -188,7 +184,8 @@ public class DiscordLinkScreen extends Screen {
                 0xAAAAAA
         );
 
-        graphics.drawCenteredString(this.font, this.statusMessage, centerX, centerY - 20, this.statusColor);
+
+        statusMessage.render(graphics, this.font, centerX, centerY - 20);
     }
 
     @Override
