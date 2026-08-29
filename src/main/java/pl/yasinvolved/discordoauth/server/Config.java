@@ -15,13 +15,11 @@ public class Config {
 
     public static final ModConfigSpec.ConfigValue<String> API_BASE_URL;
 
-    public enum SecretSource {
-        ENV_VAR,
-        CONFIG_VALUE
-    }
-
     public static final ModConfigSpec.ConfigValue<String> WEBHOOK_SECRET;
     public static final ModConfigSpec.ConfigValue<Integer> WEBHOOK_PORT;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> SERVER_CHECK;
+    public static final ModConfigSpec.ConfigValue<String> SERVER_CHECK_ID;
 
     // whitelist
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELISTED_UUIDS;
@@ -43,10 +41,24 @@ public class Config {
         WEBHOOK_PORT = BUILDER
                 .comment("Port on which the webhook server should be listening")
                 .defineInRange("webhookPort", 8080, 0, (int)Short.MAX_VALUE * 2);
+        BUILDER.pop();
+
+
+        BUILDER.push("Server check");
+        SERVER_CHECK = BUILDER
+                .comment("Enable server check")
+                .define("serverCheck", false);
+
+        SERVER_CHECK_ID = BUILDER
+                .comment("ID of the Discord server")
+                .define("serverId", "");
+        BUILDER.pop();
+
         BUILDER.push("Whitelist");
         WHITELISTED_UUIDS = BUILDER
                 .comment("Insert here UUIDs of players that don't need to have enforced login")
                 .defineList("whitelisted_uuids", ArrayList::new, obj -> obj instanceof String);
+        BUILDER.pop();
         SPEC = BUILDER.build();
     }
 

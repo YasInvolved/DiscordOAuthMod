@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
+import pl.yasinvolved.discordoauth.common.network.payloads.AuthCancelPayloadC2S;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -42,7 +43,6 @@ public class DiscordLinkScreen extends Screen {
     public DiscordLinkScreen(String apiUrl, String challengeToken, IPayloadContext context) {
         super(Component.literal("Discord Account Verification"));
         this.apiUrl = apiUrl;
-        System.out.println(apiUrl);
         this.challengeToken = challengeToken;
         this.networkContext = context;
     }
@@ -56,6 +56,14 @@ public class DiscordLinkScreen extends Screen {
 
         if (this.cancelButton != null) {
             this.cancelButton.active = false;
+        }
+    }
+
+    public void onAuthRefused(String reason) {
+        updateStatus("Server refused authentication. Reason: " + reason, 0xFF5555);
+
+        if (this.openBrowserButton != null) {
+            this.openBrowserButton.active = false;
         }
     }
 
@@ -152,7 +160,7 @@ public class DiscordLinkScreen extends Screen {
     }
 
     private void cancel(Button _button) {
-        this.networkContext.disconnect(Component.literal("Discord verification cancelled."));
+        this.networkContext.reply(new AuthCancelPayloadC2S());
 
         Screen parentMenu = new JoinMultiplayerScreen(new TitleScreen());
         this.minecraft.setScreen(new DisconnectedScreen(

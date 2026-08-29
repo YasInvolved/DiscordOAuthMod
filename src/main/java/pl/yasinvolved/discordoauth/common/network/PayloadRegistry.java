@@ -8,9 +8,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.client.ClientPayloadHandler;
 import pl.yasinvolved.discordoauth.common.Discordoauth;
-import pl.yasinvolved.discordoauth.common.network.payloads.AuthAckPayloadC2S;
-import pl.yasinvolved.discordoauth.common.network.payloads.AuthRequestPayloadS2C;
-import pl.yasinvolved.discordoauth.common.network.payloads.AuthSuccessPayloadS2C;
+import pl.yasinvolved.discordoauth.common.network.payloads.*;
 import pl.yasinvolved.discordoauth.server.network.ServerPayloadHandler;
 
 @EventBusSubscriber(modid = Discordoauth.MODID)
@@ -39,6 +37,19 @@ public class PayloadRegistry {
                 AuthSuccessPayloadS2C.CODEC,
                 (payload, context) -> ClientPayloadHandler.handleAuthSuccess(payload, context)
         );
+
+        registrar.configurationToClient(
+                AuthRefusedPayloadS2C.TYPE,
+                AuthRefusedPayloadS2C.CODEC,
+                (payload, context) -> ClientPayloadHandler.handleAuthRefused(payload, context)
+        );
+
+        registrar.configurationToServer(
+                AuthCancelPayloadC2S.TYPE,
+                AuthCancelPayloadC2S.CODEC,
+                (payload, context) -> ServerPayloadHandler.handleAuthCancel(payload, context)
+        );
+
         LOGGER.info("Configuration packets registered successfully!");
     }
 }

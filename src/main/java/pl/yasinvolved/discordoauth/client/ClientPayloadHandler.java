@@ -6,6 +6,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.client.gui.screens.DiscordLinkScreen;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthAckPayloadC2S;
+import pl.yasinvolved.discordoauth.common.network.payloads.AuthRefusedPayloadS2C;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthRequestPayloadS2C;
 import pl.yasinvolved.discordoauth.common.network.payloads.AuthSuccessPayloadS2C;
 
@@ -29,6 +30,14 @@ public class ClientPayloadHandler {
             }
 
             context.reply(new AuthAckPayloadC2S());
+        });
+    }
+
+    public static void handleAuthRefused(final AuthRefusedPayloadS2C payload, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (MINECRAFT.screen instanceof DiscordLinkScreen linkScreen) {
+                linkScreen.onAuthRefused(payload.reason());
+            }
         });
     }
 }

@@ -5,8 +5,6 @@ import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.slf4j.Logger;
 import pl.yasinvolved.discordoauth.server.Config;
 import pl.yasinvolved.discordoauth.server.client_config.tasks.DiscordAuthTask;
@@ -46,7 +44,7 @@ public class WebhookHandler implements HttpHandler {
                     DiscordAuthTask task = WebhookManager.removePendingLogin(playerUuid);
 
                     if (task != null) {
-                        ServerLifecycleHooks.getCurrentServer().execute(task::onWebhookSuccess);
+                        task.onWebhookSuccess();
                         exchange.sendResponseHeaders(200, -1);
                         return;
                     } else {
