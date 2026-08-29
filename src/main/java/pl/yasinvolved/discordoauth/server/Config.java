@@ -1,10 +1,10 @@
-package pl.yasinvolved.discordoauth;
+package pl.yasinvolved.discordoauth.server;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
+import pl.yasinvolved.discordoauth.server.crypto.TokenGenerator;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
@@ -15,14 +15,14 @@ public class Config {
 
     public static final ModConfigSpec.ConfigValue<String> API_BASE_URL;
 
-    public enum SecretSource {
-        ENV_VAR,
-        CONFIG_VALUE
-    }
+    public static final ModConfigSpec.ConfigValue<String> WEBHOOK_SECRET;
+    public static final ModConfigSpec.ConfigValue<Integer> WEBHOOK_PORT;
 
-    public static final ModConfigSpec.EnumValue<SecretSource> SECRET_SOURCE;
-    public static final ModConfigSpec.ConfigValue<String> SECRET_ENV_VAR_NAME;
-    public static final ModConfigSpec.ConfigValue<String> SECRET_RAW_VALUE;
+    public static final ModConfigSpec.ConfigValue<Boolean> SERVER_CHECK;
+    public static final ModConfigSpec.ConfigValue<String> SERVER_CHECK_ID;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> ROLE_CHECK;
+    public static final ModConfigSpec.ConfigValue<String> ROLE_CHECK_ID;
 
     // whitelist
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WHITELISTED_UUIDS;
@@ -32,36 +32,43 @@ public class Config {
 
         API_BASE_URL = BUILDER
                 .comment(" Base URL of your OAuth microservice")
-                .define("apiBaseUrl", "http://localhost:3000", Config::isValidUrl);
+                .define("apiBaseUrl", "http://127.0.0.1:3000", Config::isValidUrl);
 
         BUILDER.pop();
 
-        BUILDER.push("Security Settings");
+        BUILDER.push("Webhook Server Settings");
+        WEBHOOK_SECRET = BUILDER
+                .comment("Secret Key for webhook verification")
+                .define("secretValue", TokenGenerator.generateChallengeToken());
 
-        SECRET_SOURCE = BUILDER
-                .comment(
-                        "Where to load the server secret from.",
-                        "ENV_VAR (recommended): reads the secret from an environment variable.",
-                        "CONFIG_VALUE (unsafe): stores the secret directly in this file in plaintext.",
-                        " USE CONFIG_VALUE ONLY FOR LOCAL TESTING CAREFULLY"
-                )
-                .defineEnum("secretSource", SecretSource.ENV_VAR);
+        WEBHOOK_PORT = BUILDER
+                .comment("Port on which the webhook server should be listening")
+                .defineInRange("webhookPort", 8080, 0, (int)Short.MAX_VALUE * 2);
+        BUILDER.pop();
 
-        SECRET_ENV_VAR_NAME = BUILDER
-                .comment("Name of the environment variable holding thhe secret (hex-encoded)")
-                .define("secretEnvVarName", "MC_SECRET");
+        BUILDER.push("Discord Settings");
+        SERVER_CHECK = BUILDER
+                .comment("Enable server check")
+                .define("serverCheck", false);
 
-        SECRET_RAW_VALUE = BUILDER
-                .comment("Used only if secretSource = CONFIG_VALUE. Leave blank otherwise.")
-                .define("secretValue", "");
+        SERVER_CHECK_ID = BUILDER
+                .comment("ID of the Discord server to check for")
+                .define("serverId", "");
 
+        ROLE_CHECK = BUILDER
+                .comment("Enable role check")
+                .define("roleCheck", false);
+
+        ROLE_CHECK_ID = BUILDER
+                .comment("ID of the Server's role to check for")
+                .define("serverRole", "");
         BUILDER.pop();
 
         BUILDER.push("Whitelist");
         WHITELISTED_UUIDS = BUILDER
                 .comment("Insert here UUIDs of players that don't need to have enforced login")
                 .defineList("whitelisted_uuids", ArrayList::new, obj -> obj instanceof String);
-
+        BUILDER.pop();
         SPEC = BUILDER.build();
     }
 
