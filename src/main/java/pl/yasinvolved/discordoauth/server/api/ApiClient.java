@@ -22,7 +22,7 @@ public class ApiClient {
 
     public ApiResponse getUser(UUID minecraftUuid) {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(API_BASE_URI.resolve(minecraftUuid.toString()))
+                .uri(API_BASE_URI.resolve("player/" + minecraftUuid))
                 .header("Authorization", "Bearer " + API_SECRET)
                 .GET()
                 .build();

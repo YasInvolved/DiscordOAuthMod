@@ -49,8 +49,8 @@ public class DiscordAuthTask implements ICustomConfigurationTask {
 
                 ServerLifecycleHooks.getCurrentServer().execute(() -> {
                     if (initialCheckStatus) {
-                        this.listener.finishCurrentTask(this.type());
-                    } {
+                        this.consumer.accept(new AuthSuccessPayloadS2C());
+                    } else {
                         this.consumer.accept(new AuthRequestPayloadS2C(INIT_URI.toString(), this.challengeToken));
                         WebhookManager.addPendingLogin(this.playerUuid, this);
                     }
@@ -72,7 +72,6 @@ public class DiscordAuthTask implements ICustomConfigurationTask {
     private boolean initialCheck(boolean serverCheckEnabled) {
         ApiClient client = new ApiClient();
         ApiResponse userResponse = client.getUser(this.playerUuid);
-        System.out.println("User response: " + userResponse.statusCode() + " Player UUID: " + this.playerUuid);
 
         boolean serverCheckSuccess = true;
         if (serverCheckEnabled) {
