@@ -41,7 +41,7 @@ public class DiscordoauthServer {
 
     @SubscribeEvent()
     public static void onServerStarting(final ServerStartingEvent event) {
-        WebhookManager.startServer(Config.WEBHOOK_PORT.get());
+        WebhookManager.startServer(Config.WEBHOOK_ADDR.get(), Config.WEBHOOK_PORT.get());
     }
 
     @SubscribeEvent()

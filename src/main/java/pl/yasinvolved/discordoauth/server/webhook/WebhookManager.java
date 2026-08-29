@@ -23,9 +23,9 @@ public class WebhookManager {
         return PENDING_LOGINS.remove(playerId);
     }
 
-    public static void startServer(int port) {
+    public static void startServer(String addr, int port) {
         try {
-            server = HttpServer.create(new InetSocketAddress(port), 0);
+            server = HttpServer.create(new InetSocketAddress(addr, port), 0);
             server.createContext("/webhook", new WebhookHandler());
             server.setExecutor(Executors.newFixedThreadPool(2));
             server.start();
