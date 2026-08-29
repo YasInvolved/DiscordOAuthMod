@@ -12,5 +12,9 @@
   "discordoauth.link_screen.status.waiting_for_browser": "Waiting for you to authorize in the browser...",
   "discordoauth.link_screen.status.api_conn_failure": "Failed to connect to auth server.",
 
-  "discordoauth.disconnect_screen.reason": "Discord verification cancelled. Your account will be unlinked automatically."
+  "discordoauth.disconnect_screen.reason": "Discord verification cancelled. Your account will be unlinked automatically.",
+
+  "discordoauth.chat.unlink_started": "Unlinking started. You'll get disconnected from the server shortly.",
+  "discordoauth.chat.unlink_success": "Your Discord account has been unlinked. You cannot play further on this server, unless you link your account again.",
+  "discordoauth.chat.unlink_failure": "Failed to unlink your Discord account. Make contact with adminstration for further details."
 }

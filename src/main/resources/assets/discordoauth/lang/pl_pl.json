@@ -12,5 +12,9 @@
   "discordoauth.link_screen.status.waiting_for_browser": "Oczekiwanie na odpowiedź Discorda...",
   "discordoauth.link_screen.status.api_conn_failure": "Błąd połączenia. Sprawdź swoje połączenie z internetem lub skontaktuj się z administratorem.",
 
-  "discordoauth.disconnect_screen.reason": "Weryfikacja anulowana. Twoje konto Discord zostanie automatycznie rozłączone."
+  "discordoauth.disconnect_screen.reason": "Weryfikacja anulowana. Twoje konto Discord zostanie automatycznie rozłączone.",
+
+  "discordoauth.chat.unlink_started": "Rozłączanie rozpoczęte. Wkrótce zostaniesz rozłączony z serwerem.",
+  "discordoauth.chat.unlink_success": "Konto Discord zostało rozłączone. Aby zagrać ponownie na tym serwerze, będziesz musiał/a je znowu połączyć.",
+  "discordoauth.chat.unlink_failure": "Nie udało się rozłączyć konta Discord. Skontaktuj się z administracją serwera."
 }
