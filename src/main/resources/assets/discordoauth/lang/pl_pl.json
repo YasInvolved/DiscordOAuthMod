@@ -1,6 +1,16 @@
 {
-  "message.discordoauth.auth_link": "Naciśnij tutaj aby zalogować się przez Discord",
-  "message.discordoauth.auth_success": "Logowanie się udało! Miłej gry.",
-  "message.discordoauth.force_release_sender": "Gracz tymczasowy wypuszczony!",
-  "message.discordoauth.force_release_receiver": "Zostałeś/aś tymczasowo wypuszczony przez administratora. Następnym razem musisz się zalogować normalnie."
+  "discordoauth.link_screen.title": "Weryfikacja Discord",
+  "discordoauth.link_screen.subtitle": "Połącz swoje konto Discord, żeby grać na tym serwerze.",
+
+  "discordoauth.link_screen.button.open_discord": "Otwórz Discord",
+  "discordoauth.link_screen.button.cancel": "Anuluj",
+
+  "discordoauth.link_screen.status.waiting_for_link": "Oczekiwanie na odpowiedź serwera...",
+  "discordoauth.link_screen.status.link_ready": "Wszystko gotowe! Naciśnij przycisk, aby otworzyć Discord",
+  "discordoauth.link_screen.status.success": "Logowanie udane! Wczytywanie świata...",
+  "discordoauth.link_screen.status.refused": "Logowanie udrzucone przez serwer. Skontaktuj się z administratorem.",
+  "discordoauth.link_screen.status.waiting_for_browser": "Oczekiwanie na odpowiedź Discorda...",
+  "discordoauth.link_screen.status.api_conn_failure": "Błąd połączenia. Sprawdź swoje połączenie z internetem lub skontaktuj się z administratorem.",
+
+  "discordoauth.disconnect_screen.reason": "Weryfikacja anulowana. Twoje konto Discord zostanie automatycznie rozłączone."
 }

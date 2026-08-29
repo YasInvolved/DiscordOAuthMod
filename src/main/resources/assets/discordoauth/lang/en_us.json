@@ -1,6 +1,16 @@
 {
-  "message.discordoauth.auth_link": "Click here to link your Discord account and join!",
-  "message.discordoauth.auth_success": "Logged in successfully! Welcome to the server.",
-  "message.discordoauth.force_release_sender": "Player temporarily accepted!",
-  "message.discordoauth.force_release_receiver": "You've been forcefully logged in. You'll have to log in again next time."
+  "discordoauth.link_screen.title": "Discord Verification",
+  "discordoauth.link_screen.subtitle": "You must link your Discord account to play on this server.",
+
+  "discordoauth.link_screen.button.open_discord": "Open Discord",
+  "discordoauth.link_screen.button.cancel": "Cancel",
+
+  "discordoauth.link_screen.status.waiting_for_link": "Waiting for server to generate authorization link...",
+  "discordoauth.link_screen.status.link_ready": "Ready! Click below to link your account.",
+  "discordoauth.link_screen.status.success": "Authentication successful! Loading world...",
+  "discordoauth.link_screen.status.refused": "Server refused authentication.",
+  "discordoauth.link_screen.status.waiting_for_browser": "Waiting for you to authorize in the browser...",
+  "discordoauth.link_screen.status.api_conn_failure": "Failed to connect to auth server.",
+
+  "discordoauth.disconnect_screen.reason": "Discord verification cancelled. Your account will be unlinked automatically."
 }

@@ -41,15 +41,15 @@ public class DiscordLinkScreen extends Screen {
     private boolean isError = false;
 
     public DiscordLinkScreen(String apiUrl, String challengeToken, IPayloadContext context) {
-        super(Component.literal("Discord Account Verification"));
-        this.statusMessage = StatusString.ofText("Waiting for server to generate authorization link...", StatusString.Status.NEUTRAL);
+        super(Component.translatable("discordoauth.link_screen.title"));
+        this.statusMessage = StatusString.ofTranslatable("discordoauth.link_screen.status.waiting_for_link", StatusString.Status.NEUTRAL);
         this.apiUrl = apiUrl;
         this.challengeToken = challengeToken;
         this.networkContext = context;
     }
 
     public void onAuthSuccess() {
-        statusMessage.updateText("Authentication successful! Loading world...", StatusString.Status.SUCCESS);
+        statusMessage.updateTranslatable("discordoauth.link_screen.status.success", StatusString.Status.SUCCESS);
 
         if (this.openBrowserButton != null) {
             this.openBrowserButton.active = false;
@@ -61,7 +61,7 @@ public class DiscordLinkScreen extends Screen {
     }
 
     public void onAuthRefused(String reason) {
-        statusMessage.updateText("Server refused authentication. Reason: " + reason, StatusString.Status.ERROR);
+        statusMessage.updateTranslatable("discordoauth.link_screen.status.refused", StatusString.Status.ERROR);
 
         if (this.openBrowserButton != null) {
             this.openBrowserButton.active = false;
@@ -76,11 +76,11 @@ public class DiscordLinkScreen extends Screen {
         int centerY = this.height / 2;
 
         this.openBrowserButton = Button.builder(
-                Component.literal("Open Discord"),
+                Component.translatable("discordoauth.link_screen.button.open_discord"),
                 button -> {
                     if (this.authUrl != null) {
                         Util.getPlatform().openUri(URI.create(this.authUrl));
-                        statusMessage.updateText("Waiting for you to authorize in the browser...", StatusString.Status.NEUTRAL);
+                        statusMessage.updateTranslatable("discordoauth.link_screen.status.waiting_for_browser", StatusString.Status.NEUTRAL);
                     }
                 })
                 .bounds(centerX - 100, centerY + 10, 200, 20)
@@ -90,7 +90,7 @@ public class DiscordLinkScreen extends Screen {
         this.addRenderableWidget(this.openBrowserButton);
 
         this.cancelButton = Button.builder(
-                    Component.literal("Disconnect"),
+                    Component.translatable("discordoauth.link_screen.button.cancel"),
                     this::cancel
                 )
                 .bounds(centerX - 100, centerY + 35, 200, 20)
@@ -103,12 +103,6 @@ public class DiscordLinkScreen extends Screen {
     }
 
     private void fetchAuthUrl() {
-        if (this.minecraft.getUser() == null) {
-            statusMessage.updateText("Error: Could not determine local player profile.", StatusString.Status.ERROR);
-            this.isError = true;
-            return;
-        }
-
         UUID playerUuid = this.minecraft.getUser().getProfileId();
 
         CompletableFuture.runAsync(() -> {
@@ -136,7 +130,7 @@ public class DiscordLinkScreen extends Screen {
 
                     this.minecraft.execute(() -> {
                         this.authUrl = receivedUrl;
-                        statusMessage.updateText("Ready! Click below to link your account:", StatusString.Status.SUCCESS);
+                        statusMessage.updateTranslatable("discordoauth.link_screen.status.link_ready", StatusString.Status.SUCCESS);
 
                         if (this.openBrowserButton != null) {
                             this.openBrowserButton.active = true;
@@ -148,7 +142,7 @@ public class DiscordLinkScreen extends Screen {
             } catch (Exception e) {
                 this.minecraft.execute(() -> {
                     this.isError = true;
-                    statusMessage.updateText("Failed to connect to auth server: " + e.getMessage(), StatusString.Status.ERROR);
+                    statusMessage.updateTranslatable("discordoauth.link_screen.status.api_conn_failure", StatusString.Status.ERROR);
                     LOGGER.error("Failed to connect to auth server.", e);
                 });
             }
@@ -162,7 +156,7 @@ public class DiscordLinkScreen extends Screen {
         this.minecraft.setScreen(new DisconnectedScreen(
                 parentMenu,
                 Component.translatable("disconnect.disconnected"),
-                Component.literal("Discord verification cancelled.")
+                Component.translatable("discordoauth.disconnect_screen.reason")
         ));
     }
 
@@ -178,7 +172,7 @@ public class DiscordLinkScreen extends Screen {
 
         graphics.drawCenteredString(
                 this.font,
-                Component.literal("You must link your Discord account to play on this server."),
+                Component.translatable("discordoauth.link_screen.subtitle"),
                 centerX,
                 centerY - 45,
                 0xAAAAAA
