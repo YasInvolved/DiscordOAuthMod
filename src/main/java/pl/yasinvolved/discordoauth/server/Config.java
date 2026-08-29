@@ -16,6 +16,7 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<String> API_BASE_URL;
 
     public static final ModConfigSpec.ConfigValue<String> WEBHOOK_SECRET;
+    public static final ModConfigSpec.ConfigValue<String> WEBHOOK_ADDR;
     public static final ModConfigSpec.ConfigValue<Integer> WEBHOOK_PORT;
 
     public static final ModConfigSpec.ConfigValue<Boolean> SERVER_CHECK;
@@ -37,9 +38,13 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("Webhook Server Settings");
+
         WEBHOOK_SECRET = BUILDER
                 .comment("Secret Key for webhook verification")
                 .define("secretValue", TokenGenerator.generateChallengeToken());
+        WEBHOOK_ADDR = BUILDER
+                .comment("Addr on which the webhook server is listening")
+                .define("webhookAddr", "127.0.0.1");
 
         WEBHOOK_PORT = BUILDER
                 .comment("Port on which the webhook server should be listening")
